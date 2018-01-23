@@ -48,33 +48,49 @@ public class SparseNumericVector implements Iterable {
      * @param e element to add
      */
   public void add(SparseNumericElement e) throws UnsupportedOperationException {
+	  // exception handling
       boolean doesExist = false;
-      while(this.iterator().hasNext()){
-    	  	if(this.iterator().next().getIndex() == e.getIndex()){
+      while(this.iterator().hasNext()){										// traverse the elements
+    	  	if(this.iterator().next().getIndex() == e.getIndex()){				// check for existing indices
     	  		doesExist = true;
     	  	}
-      }
-	  if(e.getValue() == 0 || doesExist){
+      }	
+	  if(e.getValue() == 0 || doesExist){									// exception throwing
 		  throw new UnsupportedOperationException();
        }
 	  
-	  if(this.head == null){
+	  // functionality
+	  if(this.head == null){													// add to empty list
 		  SparseNumericNode n = new SparseNumericNode(e, null);
 		  this.head = n;
 		  this.tail = n;
-	  } else if (e.getIndex() < this.getFirst().getElement().getIndex()){
+	  } else if (e.getIndex() < this.getFirst().getElement().getIndex()){		// add to start of list
 		  SparseNumericNode newHead = new SparseNumericNode(e, this.head);
 		  this.head = newHead;
-	  } else if (e.getIndex() > this.tail.getElement().getIndex()){
+	  } else if (e.getIndex() > this.tail.getElement().getIndex()){			// add to end of list
 		  SparseNumericNode newTail = new SparseNumericNode(e, null);
-		  SparseNumericNode oldTail = new SparseNumericNode(this.tail.getElement(), newTail);
+		  this.tail.setNext(newTail);
 		  this.tail = newTail;
-	  } else {
-		  long index = e.getIndex();
-		  SparseNumericElement lastElement;
-		  int workingIndex = 1;
-		  for(int i = 1; i < this.getSize(); i++){
-			  
+	  } else {																// add to middle of list
+		  long insertIndex = e.getIndex();									// index of element to be inserted
+		  long lastNodeIndex, workingNodeIndex;								// indices of current and prev nodes
+		  SparseNumericNode workingNode = this.head;							// current node
+		  SparseNumericNode lastNode = null;									// previous node
+		  SparseNumericNode insertNode = new SparseNumericNode(e, null);		// node to be inserted (temporarily null)
+		 
+		  while(this.iterator().hasNext()){									// traverse the vector searching for insert point
+			  workingNodeIndex = workingNode.getElement().getIndex();			// index of current node
+			  if(workingNode.equals(this.head)){								// for when the insert is next to the head
+				  lastNodeIndex = 0;
+			  } else {														// for when the insert is anywhere else
+				  lastNodeIndex = lastNode.getElement().getIndex();
+			  }
+			  // check to see that the index to insert is less than the next and greater than the index before it
+			  if ((insertIndex < workingNodeIndex) && (insertIndex > lastNodeIndex)) {
+				  insertNode.setNext(workingNode);							// chain the inserted node to the next node
+				  lastNode.setNext(insertNode);								// chain the previous node to the inserted node
+			  }
+			  lastNode = workingNode;										// the last node becomes the old working node
 		  }
 	  }
     }
@@ -87,9 +103,29 @@ public class SparseNumericVector implements Iterable {
      * @return true if removed, false if does not exist
      */
     public boolean remove(Long index) {
-        //implement this method
-        //this return statement is here to satisfy the compiler - replace it with your code.
-        return false; 
+    	
+    		long remIndex = index;
+    		long workingNodeIndex;
+    		SparseNumericNode lastNode = null;
+    		SparseNumericNode workingNode = this.head;
+    		SparseNumericNode nextNode = null;
+    		while(this.iterator().hasNext()){
+    			
+    			workingNodeIndex = workingNode.getElement().getIndex();			// track index of working node
+    			if(workingNodeIndex == remIndex){								// check if indices match
+    				if(workingNode.equals(this.head)){							// special case where head is removed
+    					this.head = this.head.getNext();							// update the head for this case
+    				} else {														// general case for all other removals
+    					lastNode.setNext(nextNode);								// chain around the working node
+    				}
+    				return true;													// returns true since there was a removal
+    			} else {															// update nodes for next iteration
+    				lastNode = workingNode;
+    				workingNode = nextNode;
+    				nextNode = nextNode.getNext();
+    			}
+    		}
+    		return false;														// returns false since it ran through the loop w/o a removal
     }
 
     /**
