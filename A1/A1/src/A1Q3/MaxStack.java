@@ -21,7 +21,7 @@ public class MaxStack<E extends Comparable> extends Stack<E> {
     			maxStack.push(element);
     			otherStack.push(element);
     		} else {
-    			if(maxStack.peek().compareTo(element) == )
+    			
     		}
 
         return element; //Dummy return to satisfy compiler.  Remove once coded.

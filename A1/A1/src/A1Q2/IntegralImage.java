@@ -28,14 +28,11 @@ public class IntegralImage {
         			throw new InvalidImageException();
         		}
         }
-        int sum = 0;
         for(int i = 0; i < this.imageHeight; i++){
         		for(int j = 0; j < this.imageWidth; j++){
-        			sum += image[i][j];
-        			int average = sum / (i*j);
-            		this.integralImage[i][j] = average;
         		}
         }
+        this.integralImage = image.clone();
     }
 
     /**
@@ -61,8 +58,6 @@ public class IntegralImage {
     		if ((top < 0) || (bottom > this.imageHeight) || (left < 0) || (right > this.imageWidth)){
     			throw new BoundaryViolationException();		// exception check
     		}
-    		int pixels = this.imageHeight * this.imageWidth;
-    		
-        return 0; //dummy value - remove once coded.
+    		return 0; //dummy value - remove once coded.
     }
 }
