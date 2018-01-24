@@ -28,10 +28,8 @@ public class testSparseNumericVector {
         print(Y);
         Y.add(new SparseNumericElement(15, 1));
         print(Y);
-        System.out.println("TESTER: PRINT OF X:" + X);
-        System.out.println("TESTER: PRINT OF Y:" + Y);
         X.remove((long) 150);
-        System.out.println("TESTER: PRINT OF X rem:" + X);
+        
         projection = X.dot(Y);
 
         System.out.println("The inner product of");
