@@ -152,38 +152,38 @@ public class SparseNumericVector implements Iterable {
 
     public double dot (SparseNumericVector Y) {
     	
-    	// Maps to store index, element pairs from each SparseNumericVector - allows for O(m+n) projection using keySet()
+    	// maps to store index, element pairs from each SparseNumericVector - allows for O(m+n) projection using keySet()
     	Map<Long, SparseNumericElement> yMap = new LinkedHashMap<Long, SparseNumericElement>();
     	Map<Long, SparseNumericElement> thisMap = new LinkedHashMap<Long, SparseNumericElement>();
     	
-    	// Working nodes to convert into each SNV's respective Map
+    	// working nodes to convert into each SNV's respective Map
     	SparseNumericNode yNode = Y.head;
     	SparseNumericNode thisNode = this.head; 
     	
-    	for(int i = 0; i < this.getSize(); i++) {								// Load Element Index as key and Element Value as value
+    	for(int i = 0; i < this.getSize(); i++) {								// load Element Index as key and Element Value as value
     		thisMap.put(thisNode.getElement().getIndex(), thisNode.getElement());
-    		thisNode = thisNode.getNext();										// Load the next node's values in
+    		thisNode = thisNode.getNext();										// load the next node's values in
     	}
-    	for(int y = 0; y < Y.getSize(); y++) {									// Load Element Index as key and Element Value as value
+    	for(int y = 0; y < Y.getSize(); y++) {									// load Element Index as key and Element Value as value
     		yMap.put(yNode.getElement().getIndex(), yNode.getElement());
-    		yNode = yNode.getNext();											// Load the next node's values in
+    		yNode = yNode.getNext();											// load the next node's values in
     	}
     	
-    	double dotSum = 0;														// Initialize the dot product 
-    	if(thisMap.size() > yMap.size()) {										// Reduce runtime by traversing the smaller set
-    		for(long yIndex : yMap.keySet()) {									// Traverse the yMap keySet() since its smaller
-    			if(thisMap.containsKey(yIndex)) {								// Only consider values with matching keys for computation
+    	double dotSum = 0;														// initialize the dot product 
+    	if(thisMap.size() > yMap.size()) {										// reduce runtime by traversing the smaller set
+    		for(long yIndex : yMap.keySet()) {									// traverse the yMap keySet() since its smaller
+    			if(thisMap.containsKey(yIndex)) {								// only consider values with matching keys for computation
     				dotSum += yMap.get(yIndex).getValue() * thisMap.get(yIndex).getValue();
     			}
     		}
     	} else {
-    		for(long thisIndex : thisMap.keySet()) {							// Traverse the yMap keySet() since its smaller
-    			if(yMap.containsKey(thisIndex)) {								// Only consider values with matching keys for computation
+    		for(long thisIndex : thisMap.keySet()) {							// traverse the yMap keySet() since its smaller
+    			if(yMap.containsKey(thisIndex)) {								// only consider values with matching keys for computation
     				dotSum += yMap.get(thisIndex).getValue() * thisMap.get(thisIndex).getValue();
     			}
     		}
     	}
-        return dotSum; 															// Return the dot product
+        return dotSum; 															// return the dot product
         
    }
 
