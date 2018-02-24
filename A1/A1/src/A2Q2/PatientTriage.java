@@ -15,7 +15,7 @@ public class PatientTriage {
     private APQ<Patient> priorityHeap; //maintain patients in priority order
     private APQ<Patient> timeHeap;  //maintain patients in order of arrival
     private Time maxWait; //maximum waiting time
-
+    
     /**
      * Constructor
      *
@@ -53,7 +53,36 @@ public class PatientTriage {
      * @throws BoundaryViolationException under some internal error conditions
      */
     public Patient remove(Time currentTime) throws NullPointerException, EmptyQueueException, BoundaryViolationException {
-    //implement this method
+    	if(priorityHeap.isEmpty() || timeHeap.isEmpty()) {
+    		throw new EmptyQueueException();
+    	}
+    	
+    	Patient timeRemove = timeHeap.peek();
+    	Patient priorityRemove = priorityHeap.peek();
+    	
+    	TimeComparator t = new TimeComparator();
+    	
+		PatientPriorityLocator ppl = new PatientPriorityLocator();
+		PatientTimeLocator ptl = new PatientTimeLocator();
+		if(currentTime == null) {
+			System.out.println("NULL");
+    		throw new NullPointerException();
+    	}
+		// If theres a patient passed the max wait time, remove them from both queues
+		Time arrival = timeRemove.getArrivalTime();
+		Time elapsed = arrival.elapsed(currentTime);
+		
+    	if(t.compare(elapsed, this.getMaxWait()) > 0) {
+    		int remPos = ppl.get(timeRemove);
+    		timeHeap.poll();
+    		priorityHeap.remove(remPos);
+    		return timeRemove;
+    	} else { // Remove based on priority
+    		int remPos = ptl.get(priorityRemove);
+    		priorityHeap.poll();
+    		timeHeap.remove(remPos);
+    		return priorityRemove;
+    	}
     }
 
    /**

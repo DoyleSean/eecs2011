@@ -38,7 +38,11 @@ public class APQ<E> {
      * @throws NullPointerException if parameter e is null
      */
     public void offer(E e) throws NullPointerException {
-    //implement this method    
+    	if(e == null) {
+    		throw new NullPointerException();
+    	}
+    	apq.add(e);
+    	upheap(this.size());
     }
 
    /**
@@ -48,14 +52,23 @@ public class APQ<E> {
      * @throws BoundaryViolationException if pos is out of range
      */
     public void remove(int pos) throws BoundaryViolationException {
-    //implement this method
+    	if(pos > this.size() || pos < 1) {
+    		throw new BoundaryViolationException();
+    	}
+    	apq.set(1, apq.get(this.size())); 
+    	apq.set(this.size(), null);
+    	downheap(1);
     }
 
    /**
      * Removes the first entry in the priority queue.
+ * @throws BoundaryViolationException 
      */
-    public E poll() {
-        //implement this method
+    public E poll() throws BoundaryViolationException {
+        E remove = apq.get(1);
+        apq.remove(remove);
+        upheap(1);
+        return remove;
     }
 
   /**
@@ -82,7 +95,21 @@ public class APQ<E> {
      * @param pos the location of the entry to move
      */
     private void upheap(int pos) {
-        //implement this method
+    	if (pos == 1) {
+    		return;
+    	} else {
+    		int thisNodePos = pos;
+    		int parentNodePos = Math.floorDiv(pos, 2);
+    		System.out.println(apq);
+    		E thisNode = apq.get(thisNodePos);
+    		E parentNode = apq.get(parentNodePos);    		
+    		if(comparator.compare(thisNode, parentNode) > 0) {
+    			swap(thisNodePos, parentNodePos);
+    			upheap(parentNodePos);
+    		} else {
+    			return;
+    		}
+    	}
     }
 
     /**
@@ -90,8 +117,47 @@ public class APQ<E> {
      * @param pos the location of the entry to move
      */
     private void downheap(int pos) {
-        //implement this method
-    }
+    	// Base case: end of heap reached
+        if(pos == apq.size()) {
+        	return;
+        } else {
+        	int thisNodePos = pos;
+        	int leftChildPos = pos+1;
+        	int rightChildPos = pos+2;
+        	E thisNode = apq.get(thisNodePos);
+        	E leftChildNode = apq.get(leftChildPos);
+        	E rightChildNode = apq.get(rightChildPos);
+        	if(thisNode == null) {
+        		return;
+        	}
+        	if(leftChildNode == null) {
+        		return;
+        	}
+        	
+        	// Check if heap order is not valid
+        	if(comparator.compare(thisNode, leftChildNode) > 0) {
+        		return;
+        	}
+        	
+        	// Determine path of traversal
+        	boolean goLeft;
+        	if(rightChildNode == null) {
+        		goLeft = true;
+        	} else if(comparator.compare(leftChildNode, rightChildNode) > 0) {
+        			goLeft = false;
+        		} else {
+        			goLeft = true;
+        		}
+        		if(goLeft) {
+        			swap(thisNodePos, leftChildPos);
+        			downheap(leftChildPos);
+        		} else {
+        			swap(thisNodePos, rightChildPos);
+        			downheap(rightChildPos);
+        		}
+        	} 
+        }
+    
 
     /**
      * Swaps the entries at the specified locations.
@@ -100,6 +166,12 @@ public class APQ<E> {
      * @param pos2 the location of the second entry 
      */
     private void swap(int pos1, int pos2) {
-        //implement this method
+        E obj1 = apq.get(pos1);
+        E obj2 = apq.get(pos2);
+        
+        locator.set(obj1, pos2);
+        locator.set(obj2, pos1);
+        
+        return;
     }
 }
