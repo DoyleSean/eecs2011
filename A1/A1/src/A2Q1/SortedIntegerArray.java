@@ -29,7 +29,7 @@ public class SortedIntegerArray {
     }
     
     private boolean kPairSumInterval(Integer k, int i, int j) {
-    	int tempSum = sortedIntegerArray[i] + sortedIntegerArray[j];
+    	long tempSum = sortedIntegerArray[i] + sortedIntegerArray[j];
     	int newI = i+1;
     	int newJ = j-1;
     	if (tempSum == k) {
